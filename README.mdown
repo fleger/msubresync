@@ -1,0 +1,16 @@
+liveresync
+==========
+
+Overview
+--------
+
+Simple wrapper around MPlayer aimed at simplifying subtitles resynchronization.
+
+WARNING: this is still in a proof-of-concept (aka useless for the end users) state.
+
+Dependencies 
+------------
+- python ≥ 2.6 and < 3 (http://python.org/)
+- mplayer (http://www.mplayerhq.hu) or mplayer2 (http://www.mplayer2.org/)
+- mplayer.py ≥ 0.7 (http://pypi.python.org/pypi/mplayer.py)
+- gaupol (http://home.gna.org/gaupol/, only the "aeidon" module is actually required)

@@ -9,6 +9,7 @@
 
 from __future__ import print_function
 
+import sys
 import threading
 import asyncore
 import re
@@ -16,6 +17,8 @@ import subprocess
 import copy
 
 from mplayer.async import AsyncPlayer
+
+from .tools import secToHMS
 
 class ResyncPlayer(object):
   NO_BIND = re.compile(".*No bind found for key '(.+)'\.")
@@ -71,8 +74,10 @@ class ResyncPlayer(object):
     pass
 
   def __pushDelay(self):
-    print(self._lastDelay)
     self.__delays.append(self._lastDelay)
+    s = "%+.3f --> %s" %(self.__delays[-1][0], secToHMS(self.__delays[-1][1]))
+    print(s)
+    self.__player.osd_show_text(s, 2)
 
   def __stdoutHandler(self, data):
     if data.startswith('EOF code'):
@@ -97,5 +102,3 @@ class ResyncPlayer(object):
     self.__pollTimer.cancel()
     self.__delays.append((self._lastDelay[0], self.length))
 
-  def getDelays(self):
-    return self.__delays

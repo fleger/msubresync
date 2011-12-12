@@ -11,14 +11,14 @@ from .resyncplayer import ResyncPlayer
 from .transform import writeTransformFile, readTransformFile
 from .tools import hmsToSec
 
-def mainResyncPlayer(*argv):
+def resyncPlayer(*argv):
   player = ResyncPlayer(argv)
   player.run()
   f = ".".join((player.subFile, "trs"))
   writeTransformFile(f, player.delays)
   print("Transform file saved as %s" %f)
 
-def mainApplyTransform(trs, *subFiles):
+def applyTransform(trs, *subFiles):
   delays = readTransformFile(trs)
   if len(delays) < 1:
     sys.exit(0)
@@ -31,6 +31,9 @@ def mainApplyTransform(trs, *subFiles):
         currentIndex += 1
       s.shift_positions(delays[currentIndex][0])
     p.save_main()
-    
-if __name__ == "__main__":
-  mainResyncPlayer(*sys.argv[1:])
+
+def mainResyncPlayer():
+  resyncPlayer(*sys.argv[1:])
+
+def mainApplyTransform():
+  applyTransform(*sys.argv[1:])

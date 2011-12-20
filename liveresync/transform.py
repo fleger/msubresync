@@ -13,8 +13,23 @@ from .tools import hmsToSec, secToHMS
 
 __TRS_LINE = re.compile("^([+-][0-9]+\.[0-9]+) --> ([0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3})$")
 
+def optimize(delays):
+  # Sort
+  sortedDelays = sorted(delays, lambda x, y: cmp(x[1], y[1]))
+  # Concat same adjacent delays
+  if len(sortedDelays) < 2:
+    delays = sortedDelays
+  else:
+    delays = [sortedDelays[0]]
+    for d in sortedDelays[1:]:
+      if d[0] == delays[-1][0]:
+        delays[-1] = d
+      else:
+        delays.append(d)
+  return delays
+
 def writeTransformFile(fileName, delays):
-  delays = sorted(delays, lambda x, y: cmp(x[1], y[1]))
+  delays = optimize(delays)
   with open(fileName, "wt") as f:
     for delay, end in delays:
       f.write("%+.3f --> %s\n" %(delay, secToHMS(end)))
@@ -28,4 +43,4 @@ def readTransformFile(fileName):
         raise ValueError
       else:
         delays.append((float(m.groups()[0]), hmsToSec(m.groups()[1])))
-  return delays
+  return optimize(delays)

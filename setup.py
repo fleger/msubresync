@@ -21,9 +21,6 @@ setup(
   },
 
   install_requires = ['mplayer.py>=0.7'],
-  dependency_links = [
-    "http://home.gna.org/gaupol/download.html"
-  ],
 
   author = "Florian Léger",
   author_email = "florian6.leger@laposte.net",

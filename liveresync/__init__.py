@@ -33,7 +33,7 @@ def applyTransform(trs, *subFiles):
     p = aeidon.Project()
     p.open_main(f)
     for s in p.subtitles:
-      if (hmsToSec(s.get_start(aeidon.modes.TIME)) > delays[currentIndex][1]) and (currentIndex < (len(delays) - 1)):
+      if (hmsToSec(s.get_start(aeidon.modes.TIME)) + delays[currentIndex][0] > delays[currentIndex][1]) and (currentIndex < (len(delays) - 1)):
         currentIndex += 1
       s.shift_positions(delays[currentIndex][0])
     p.save_main()

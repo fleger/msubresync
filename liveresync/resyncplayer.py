@@ -77,7 +77,7 @@ class ResyncPlayer(object):
     self.__delays.append(self._lastDelay)
     s = "%+.3f --> %s" %(self.__delays[-1][0], secToHMS(self.__delays[-1][1]))
     print(s)
-    self.__player.osd_show_text(s, 2)
+    self.__player.osd_show_text(s)
 
   def __stdoutHandler(self, data):
     if data.startswith('EOF code'):

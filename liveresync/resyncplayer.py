@@ -23,20 +23,23 @@ from .tools import secToHMS
 class ResyncPlayer(object):
   NO_BIND = re.compile(".*No bind found for key '(.+)'\.")
   SUB_FILE = re.compile("SUB: Added subtitle file \(1\): (.+)$")
+  POLLING_RESOLUTION=0.1
+  KEY="KP9"
 
   def __init__(self, args=[]):
-    self.__player = AsyncPlayer(autospawn=False, stderr=subprocess.PIPE)
-    self.__player._base_args = ('-slave', '-idle', '-really-quiet', '-msglevel', 'global=4', '-input', 'nodefault-bindings')
-    self.__player.args = ['-msglevel', 'input=5:cplayer=5'] + list(args)
+    self.__player = AsyncPlayer(autospawn=False, stderr=subprocess.PIPE)   
     self.__player.stdout.connect(self.__stdoutHandler)
     self.__player.stderr.connect(self.__stderrHandler)
+    self.__player._base_args = ('-slave', '-idle', '-really-quiet', '-msglevel', 'global=4', '-input', 'nodefault-bindings')
+    self.__player.args = ['-msglevel', 'input=5:cplayer=5'] + list(args)
     self.__keys = {}
-    self.__keys["KP9"] = self.__pushDelay
+    self.__keys[self.KEY] = self.__pushDelay
     self.__delays = []
     self.__lastDelay = (0, 0)
     self.__pollLock = threading.RLock()
     self.__length = None
-    self.__subFile= None
+    self.__subFile = None
+    self.__running = False
 
   @property
   def _lastDelay(self):
@@ -63,9 +66,11 @@ class ResyncPlayer(object):
         self.__lastDelay = (-delay[0], delay[1])
       if self.length is None:
         self.__length = self.__player.length
-    if self.__player.is_alive():
-      self.__pollTimer = threading.Timer(.1, self.__poll)
+    if self.__running:
+      self.__pollTimer = threading.Timer(self.POLLING_RESOLUTION, self.__poll)
       self.__pollTimer.start()
+    else:
+      print("polling not reconducted", file=sys.stderr)
 
   def __keyHandler(self, key, default=None):
     self.__keys.get(key, self.dummy if default is None else default)()
@@ -97,8 +102,15 @@ class ResyncPlayer(object):
 
   def run(self):
     self.__player.spawn()
+    # FIXME: workaround uncaught exceptions closing the channels
+    self.__player.stdout._dispatcher.handle_error = self.dummy
+    self.__player.stderr._dispatcher.handle_error = self.dummy
+    self.__running = True
     self.__poll()
     asyncore.loop()
+    print("asyncore loop stopped", file=sys.stderr)
+    self.__running = False
     self.__pollTimer.cancel()
     self.__delays.append((self._lastDelay[0], self.length))
-
+    s = "%+.3f --> %s" %(self._lastDelay[0], secToHMS(self.length))
+    print(s)

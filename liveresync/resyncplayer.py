@@ -23,14 +23,14 @@ from .tools import secToHMS
 class ResyncPlayer(object):
   NO_BIND = re.compile(".*No bind found for key '(.+)'\.")
   SUB_FILE = re.compile("SUB: Added subtitle file \(1\): (.+)$")
-  POLLING_RESOLUTION=0.1
-  KEY="KP9"
+  POLLING_RESOLUTION = 0.1
+  KEY = "KP9"
 
   def __init__(self, args=[]):
     self.__player = AsyncPlayer(autospawn=False, stderr=subprocess.PIPE)   
     self.__player.stdout.connect(self.__stdoutHandler)
     self.__player.stderr.connect(self.__stderrHandler)
-    self.__player._base_args = ('-slave', '-idle', '-really-quiet', '-msglevel', 'global=4', '-input', 'nodefault-bindings')
+    self.__player._base_args = ('-slave', '-really-quiet', '-msglevel', 'global=4')
     self.__player.args = ['-msglevel', 'input=5:cplayer=5'] + list(args)
     self.__keys = {}
     self.__keys[self.KEY] = self.__pushDelay

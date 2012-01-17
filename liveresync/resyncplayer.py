@@ -24,7 +24,6 @@ class ResyncPlayer(object):
   NO_BIND = re.compile(".*No bind found for key '(.+)'\.")
   SUB_FILE = re.compile("SUB: Added subtitle file \(1\): (.+)$")
   POLLING_RESOLUTION = 0.1
-  KEY = "KP9"
 
   def __init__(self, args=[]):
     self.__player = AsyncPlayer(autospawn=False, stderr=subprocess.PIPE)   
@@ -33,7 +32,8 @@ class ResyncPlayer(object):
     self.__player._base_args = ('-slave', '-really-quiet', '-msglevel', 'global=4')
     self.__player.args = ['-msglevel', 'input=5:cplayer=5'] + list(args)
     self.__keys = {}
-    self.__keys[self.KEY] = self.__pushDelay
+    self.__keys["F11"] = self.__pushDelay
+    self.__keys["MOUSE_BTN1"] = self.__pushDelay
     self.__delays = []
     self.__lastDelay = (0, 0)
     self.__pollLock = threading.RLock()

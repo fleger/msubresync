@@ -33,6 +33,7 @@ class ResyncPlayer(object):
     self.__player.args = ['-msglevel', 'input=5:cplayer=5'] + list(args)
     self.__keys = {}
     self.__keys["F11"] = self.__pushDelay
+    self.__keys["'"] = self.__pushDelay
     self.__keys["MOUSE_BTN1"] = self.__pushDelay
     self.__delays = []
     self.__lastDelay = (0, 0)

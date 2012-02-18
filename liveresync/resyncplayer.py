@@ -80,6 +80,7 @@ class ResyncPlayer(object):
     pass
 
   def __pushDelay(self):
+    self.__delays = filter(lambda x: x[1] < self._lastDelay[1], self.__delays)
     self.__delays.append(self._lastDelay)
     s = "%+.3f --> %s" %(self.__delays[-1][0], secToHMS(self.__delays[-1][1]))
     print(s)

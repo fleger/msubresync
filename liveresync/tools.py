@@ -9,6 +9,8 @@
 
 import re
 
+import aeidon
+
 __HMS = re.compile("^([0-9]{2}):([0-9]{2}):([0-9]{2}\.[0-9]{3})$")
 
 def hmsToSec(hms):
@@ -24,3 +26,13 @@ def secToHMS(seconds):
   m = int(seconds / 60)
   seconds %= 60
   return "%02d:%02d:%06.3f" %(h, m, seconds)
+
+def applyDelaysToSubtitles(delays, fileName):
+  currentIndex = 0
+  p = aeidon.Project()
+  p.open_main(fileName)
+  for s in p.subtitles:
+    if (hmsToSec(s.get_start(aeidon.modes.TIME)) + delays[currentIndex][0] > delays[currentIndex][1]) and (currentIndex < (len(delays) - 1)):
+      currentIndex += 1
+    s.shift_positions(delays[currentIndex][0])
+  p.save_main()

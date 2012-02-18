@@ -15,8 +15,7 @@ setup(
   packages = find_packages(),
   entry_points = {
     "console_scripts": [
-      "liveresync-player = liveresync:mainResyncPlayer",
-      "liveresync-apply = liveresync:mainApplyTransform",
+      "liveresync = liveresync:main",
     ],
   },
 

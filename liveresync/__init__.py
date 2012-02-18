@@ -11,13 +11,27 @@ from __future__ import print_function
 
 import sys
 
-import aeidon
-
 from .resyncplayer import ResyncPlayer
 from .transform import writeTransformFile, readTransformFile
-from .tools import hmsToSec
+from .tools import applyDelaysToSubtitles
 
-def resyncPlayer(*argv):
+actions = {}
+
+def action(func):
+  actions[func.func_name] = func
+  return func
+
+@action
+def play(*argv):
+  player = ResyncPlayer(argv)
+  player.run()
+  for video in player.videos:
+    if len(video.delays) > 0:
+      for f in video.subFiles:
+        applyDelaysToSubtitles(video.delays, f)
+
+@action
+def save(*argv):
   player = ResyncPlayer(argv)
   player.run()
   for video in player.videos:
@@ -25,22 +39,34 @@ def resyncPlayer(*argv):
     writeTransformFile(f, video.delays)
     print("Transform file saved as %s" %f)
 
-def applyTransform(trs, *subFiles):
+@action
+def resync(trs, *subFiles):
   delays = readTransformFile(trs)
   if len(delays) < 1:
     sys.exit(0)
   for f in subFiles:
-    currentIndex = 0
-    p = aeidon.Project()
-    p.open_main(f)
-    for s in p.subtitles:
-      if (hmsToSec(s.get_start(aeidon.modes.TIME)) + delays[currentIndex][0] > delays[currentIndex][1]) and (currentIndex < (len(delays) - 1)):
-        currentIndex += 1
-      s.shift_positions(delays[currentIndex][0])
-    p.save_main()
+    applyDelaysToSubtitles(delays, f)
 
-def mainResyncPlayer():
-  resyncPlayer(*sys.argv[1:])
+def hlp(*argv):
+  print("""Usage: %s action
 
-def mainApplyTransform():
-  applyTransform(*sys.argv[1:])
+Actions:
+
+  play [arguments]              Play files with mplayer and directly resynchronize the corresponding
+                                subtitle files.
+                                arguments: valid mplayer arguments.
+
+  save [arguments]              Play files with mplayer and save the resynchronization information
+                                in a .trs file without modifying the subtitles.
+                                arguments: valid mplayer arguments.
+
+  resync file.trs subfiles ...  Apply a .trs file to a set of subtitle files.
+""" %(sys.argv[0]))
+  sys.exit(1)
+
+def main():
+  if len(sys.argv) < 2:
+    hlp()
+  actions.get(sys.argv[1], hlp)(*sys.argv[2:])
+  
+    

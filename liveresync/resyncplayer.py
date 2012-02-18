@@ -75,6 +75,7 @@ class ResyncPlayer(object):
     self.__videos = []
     
     self.__lastDelay = (0, 0)
+    self.__currentDelayPosition = float("inf")
     self.__pollLock = threading.RLock()
     self.__running = False
 
@@ -89,23 +90,40 @@ class ResyncPlayer(object):
     if fileName is not None:
       with self.__pollLock:
         if len(self.__videos) == 0:
-          # We have a new video
+          # New video
           print("[ResyncPlayer] New video: %s" %fileName, file=sys.stderr)
           self.__videos.append(VideoDelays(fileName))
         elif fileName != self.__videos[-1].fileName:
-          # We changed video
+          # Changed video
           self.__videos[-1]._delays.append((self.__lastDelay[0], self.__videos[-1].length))
           s = "%+.3f --> %s" %(self.__lastDelay[0], secToHMS(self.__videos[-1].length))
           print(s)
           print("[ResyncPlayer] New video: %s" %fileName, file=sys.stderr)
           self.__videos.append(VideoDelays(fileName))
           self.__lastDelay = (0, 0)
+          self.__currentDelayPosition = float("inf")
     
         # Get sub_delay and time_pos from mplayer
         delay = (self.__player.sub_delay, self.__player.time_pos)
-        # Check if we have all the right values and update lastDelay
+        # Check if we have all the right values
         if delay[0] is not None and delay[1] is not None:
+          # Auto-resync on seek before the last pushed delay
+          if len(self.__videos) > 0 and len(self.__videos[-1]._delays) > 0 and delay[1] < self.__videos[-1]._delays[-1][1]:
+            for d in self.__videos[-1]._delays:
+              if delay[1] < d[1]:
+                # Auto resync only once per delay position
+                if d[1] != self.__currentDelayPosition:
+                  self.__player.sub_delay = -d[0]
+                  print("[ResyncPlayer] Auto-resync to %.3f" %(d[0]), file=sys.stderr)
+                  self.__player.osd_show_text("Sub delay: %s ms" %(int(-d[0] * 1000)))
+                  self.__currentDelayPosition = d[1]
+                  # sub_delay has changed
+                  delay = (d[0], delay[1])
+                break
+          # Update lastDelay
+          # liveresync delays follow aeidon's convention, which is the opposite of mplayer
           self.__lastDelay = (-delay[0], delay[1])
+          
         # Retreive the length of the video if we haven't done it yet
         if len(self.__videos) > 0 and self.__videos[-1].length is None:
           self.__videos[-1].length = self.__player.length
@@ -150,10 +168,11 @@ class ResyncPlayer(object):
 
   def run(self):
     self.__player.spawn()
-    # FIXME: workaround uncaught exceptions closing the channels
+    # Workaround for uncaught exceptions unexpectedly closing the channels
     self.__player.stdout._dispatcher.handle_error = self.dummy
     self.__player.stderr._dispatcher.handle_error = self.dummy
     self.__running = True
+    # Start polling
     self.__poll()
     # Main loop
     asyncore.loop()

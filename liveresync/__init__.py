@@ -20,9 +20,10 @@ from .tools import hmsToSec
 def resyncPlayer(*argv):
   player = ResyncPlayer(argv)
   player.run()
-  f = ".".join((player.subFile, "trs"))
-  writeTransformFile(f, player.delays)
-  print("Transform file saved as %s" %f)
+  for video in player.videos:
+    f = ".".join((video.fileName, "trs"))
+    writeTransformFile(f, video.delays)
+    print("Transform file saved as %s" %f)
 
 def applyTransform(trs, *subFiles):
   delays = readTransformFile(trs)

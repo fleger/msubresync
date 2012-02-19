@@ -19,7 +19,7 @@ setup(
     ],
   },
 
-  install_requires = ['mplayer.py>=0.7'],
+  install_requires = ['mplayer.py>=0.7', 'PyYAML'],
 
   author = "Florian Léger",
   author_email = "florian6.leger@laposte.net",

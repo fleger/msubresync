@@ -19,6 +19,7 @@ import copy
 from mplayer.async import AsyncPlayer
 
 from .tools import secToHMS
+from .configuration import Configuration
 
 class VideoDelays(object):
 
@@ -56,7 +57,6 @@ class VideoDelays(object):
 class ResyncPlayer(object):
   NO_BIND = re.compile(".*No bind found for key '(.+)'\.")
   SUB_FILE = re.compile("SUB: Added subtitle file \([0-9]+\): (.+)$")
-  POLLING_RESOLUTION = 0.1
 
   def __init__(self, args=[]):
     # Player instanciation
@@ -66,12 +66,19 @@ class ResyncPlayer(object):
     self.__player._base_args = ('-slave', '-really-quiet', '-msglevel', 'global=4')
     self.__player.args = ['-msglevel', 'input=5:cplayer=5'] + list(args)
 
+    conf = Configuration()
+    self.__pollingResolution = conf.values["ResyncPlayer"]["Polling Resolution"]
+    self.__autoResync = conf.values["ResyncPlayer"]["Auto-resync"]
+
+    # Action mapping
+    self.__actions = {
+      "Push Delay": self.__pushDelay,
+      "Dummy": self.__dummy,
+    }
+
     # Key binding
-    self.__keys = {}
-    self.__keys["F11"] = self.__pushDelay
-    self.__keys["'"] = self.__pushDelay
-    self.__keys["MOUSE_BTN1"] = self.__pushDelay
-    
+    self.__keys =  conf.values["ResyncPlayer"]["Bindings"]
+
     self.__videos = []
     
     self.__lastDelay = (0, 0)
@@ -108,7 +115,7 @@ class ResyncPlayer(object):
         # Check if we have all the right values
         if delay[0] is not None and delay[1] is not None:
           # Auto-resync on seek before the last pushed delay
-          if len(self.__videos) > 0 and len(self.__videos[-1]._delays) > 0 and delay[1] < self.__videos[-1]._delays[-1][1]:
+          if self.__autoResync and len(self.__videos) > 0 and len(self.__videos[-1]._delays) > 0 and delay[1] < self.__videos[-1]._delays[-1][1]:
             for d in self.__videos[-1]._delays:
               if delay[1] < d[1]:
                 # Auto resync only once per delay position
@@ -130,13 +137,13 @@ class ResyncPlayer(object):
 
     # Rearm timer
     if self.__running:
-      self.__pollTimer = threading.Timer(self.POLLING_RESOLUTION, self.__poll)
+      self.__pollTimer = threading.Timer(self.__pollingResolution, self.__poll)
       self.__pollTimer.start()
 
   def __keyHandler(self, key, default=None):
-    self.__keys.get(key, self.dummy if default is None else default)()
+    self.__actions.get(self.__keys.get(key, "Dummy" if default is None else default), self.__dummy)()
 
-  def dummy(self):
+  def __dummy(self):
     pass
 
   def __pushDelay(self):
@@ -169,8 +176,8 @@ class ResyncPlayer(object):
   def run(self):
     self.__player.spawn()
     # Workaround for uncaught exceptions unexpectedly closing the channels
-    self.__player.stdout._dispatcher.handle_error = self.dummy
-    self.__player.stderr._dispatcher.handle_error = self.dummy
+    self.__player.stdout._dispatcher.handle_error = self.__dummy
+    self.__player.stderr._dispatcher.handle_error = self.__dummy
     self.__running = True
     # Start polling
     self.__poll()

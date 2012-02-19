@@ -14,6 +14,7 @@ import sys
 from .resyncplayer import ResyncPlayer
 from .transform import writeTransformFile, readTransformFile
 from .tools import applyDelaysToSubtitles
+from .configuration import Configuration
 
 actions = {}
 
@@ -65,6 +66,7 @@ Actions:
   sys.exit(1)
 
 def main():
+  conf = Configuration()
   if len(sys.argv) < 2:
     hlp()
   actions.get(sys.argv[1], hlp)(*sys.argv[2:])

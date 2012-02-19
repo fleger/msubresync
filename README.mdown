@@ -6,11 +6,72 @@ Overview
 
 Simple wrapper around MPlayer aimed at simplifying subtitles resynchronization.
 
-WARNING: this is still in a proof-of-concept (aka useless for the end users) state.
+liveresync supports the same subtitle file formats supported by MPlayer and Gaupol.
+
+It provides a convenient way of resynchronizing subtitles that are discontinuously shifted
+while you are watching the video.
+
+You resynchronize the subtitles using MPlayer's own subtitles shifinting commands (by default by
+pressing the Z and X keys), and when you hit a discontinuity in syncronization, you use liveresync's
+"Push Delay" command (by default by pressing F11 or MOUSE_BUTTON1). Once you played the video, subtitles
+are automatically updated, or you can save the offsets in a file and apply them later in set of
+subtitle files.
+
+Note that liveresync can only help if the subtitles have been originally synchronized with
+a video playing at the same framerate as the video you have.
+
+Also note that liveresync has only been tested on Linux, though it should work on any POSIX compliant
+system.
 
 Dependencies 
 ------------
-- python ≥ 2.6 and < 3 (http://python.org/)
-- mplayer (http://www.mplayerhq.hu) or mplayer2 (http://www.mplayer2.org/)
+- Python ≥ 2.6 and < 3 (http://python.org/)
+- MPlayer (http://www.mplayerhq.hu) or MPlayer2 (http://www.mplayer2.org/)
 - mplayer.py ≥ 0.7 (http://pypi.python.org/pypi/mplayer.py)
-- gaupol (http://home.gna.org/gaupol/, only the "aeidon" module is actually required)
+- Gaupol ≥ 0.16 (http://home.gna.org/gaupol/, only the "aeidon" module is actually required)
+- PyYAML (http://pyyaml.org/wiki/PyYAML)
+
+Installation
+------------
+
+    ./setup.py build
+As root:
+    ./setup.py install
+
+Usage
+-----
+liveresync action
+
+Actions:
+
+  play [arguments]              Play files with mplayer and directly resynchronize the corresponding
+                                subtitle files.
+                                arguments: valid mplayer arguments.
+
+  save [arguments]              Play files with mplayer and save the resynchronization information
+                                in a .trs file without modifying the subtitles.
+                                arguments: valid mplayer arguments.
+
+  resync file.trs subfiles ...  Apply a .trs file to a set of subtitle files.
+
+Configuration
+-------------
+
+Configuration is stored in a YAML file generated the first time you launch liveresync:
+- $XDG_CONFIG_HOME/liveresync/liveresync.yaml on Linux,
+- ~/Library/Preferences/liveresync/liveresync.yaml on Mac OS X.
+
+The default configuration is:
+
+    ResyncPlayer:
+      # Automatically resynchronize to the previously defined delay shifts
+      # when seeking in the video stream.
+      Auto-resync: true
+      # Key bindings in the KEY: Action format.
+      # KEY can be any unused mplayer key.
+      # The only available Action for now is 'Push Delay'.
+      Bindings: {F11: Push Delay, MOUSE_BUTTON1: Push Delay}
+      # Delay between two polling function invocations, in seconds.
+      # Lower values can lead to a better precision when extracting
+      # the video timestamps.
+      Polling Resolution: 0.1

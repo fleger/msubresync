@@ -29,6 +29,7 @@ def play(*argv):
   for video in player.videos:
     if len(video.delays) > 0:
       for f in video.subFiles:
+        print("Resynchronizing %s" %f)
         applyDelaysToSubtitles(video.delays, f)
 
 @action

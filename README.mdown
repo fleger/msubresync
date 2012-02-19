@@ -49,7 +49,7 @@ Usage
       play [arguments]              Play files with mplayer and directly resynchronize the corresponding
                                     subtitle files.
                                     arguments: valid mplayer arguments.
-    
+                                    
       save [arguments]              Play files with mplayer and save the resynchronization information
                                     in a .trs file without modifying the subtitles.
                                     arguments: valid mplayer arguments.

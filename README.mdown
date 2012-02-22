@@ -1,26 +1,26 @@
-liveresync
+msubresync
 ==========
 
 Overview
 --------
 
-Simple wrapper around MPlayer aimed at simplifying subtitles resynchronization.
+msubresync is a simple wrapper around MPlayer aimed at simplifying subtitles resynchronization.
 
-liveresync supports the same subtitle file formats supported by MPlayer and Gaupol.
+msubresync supports the same subtitle file formats supported by MPlayer and Gaupol.
 
 It provides a convenient way of resynchronizing subtitles that are discontinuously shifted
 while you are watching the video.
 
 You resynchronize the subtitles using MPlayer's own subtitles shifinting commands (by default by
-pressing the Z and X keys), and when you hit a discontinuity in syncronization, you use liveresync's
+pressing the Z and X keys), and when you hit a discontinuity in syncronization, you use msubresync's
 "Push Delay" command (by default by pressing F11 or MOUSE_BUTTON1). Once you played the video, subtitles
 are automatically updated, or you can save the offsets in a file and apply them later in set of
 subtitle files.
 
-Note that liveresync can only help if the subtitles have been originally synchronized with
+Note that msubresync can only help if the subtitles have been originally synchronized with
 a video playing at the same framerate as the video you have.
 
-Also note that liveresync has only been tested on Linux, though it should work on any POSIX compliant
+Also note that msubresync has only been tested on Linux, though it should work on any POSIX compliant
 system.
 
 Dependencies 
@@ -42,7 +42,7 @@ As root:
 Usage
 -----
 
-    liveresync action
+    msubresync action
     
     Actions:
     
@@ -59,10 +59,10 @@ Usage
 Configuration
 -------------
 
-Configuration is stored in a YAML file generated the first time you launch liveresync:
+Configuration is stored in a YAML file generated the first time you launch msubresync:
 
-- $XDG_CONFIG_HOME/liveresync/liveresync.yaml on Linux,
-- ~/Library/Preferences/liveresync/liveresync.yaml on Mac OS X.
+- $XDG_CONFIG_HOME/msubresync/msubresync.yaml on Linux,
+- ~/Library/Preferences/msubresync/msubresync.yaml on Mac OS X.
 
 The default configuration is:
 

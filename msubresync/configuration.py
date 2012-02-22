@@ -21,7 +21,7 @@ class Configuration(object):
   DEFAULT_REALM = 0
   CURRENT_REALM = 1
 
-  FILENAME = "liveresync.yaml"
+  FILENAME = "msubresync.yaml"
 
   @ignore_subsequent
   def __init__(self):
@@ -43,13 +43,13 @@ class Configuration(object):
 
   def __loadConfig(self, realm):
     if "XDG_CONFIG_HOME" in os.environ:     # XDG compliant systems
-      fileName = os.path.join(os.environ["XDG_CONFIG_HOME"], "liveresync", self.FILENAME)
+      fileName = os.path.join(os.environ["XDG_CONFIG_HOME"], "msubresync", self.FILENAME)
     elif "APPDATA" in os.environ:           # Windows
-      fileName = os.path.join(os.environ["APPDATA"], "liveresync", self.FILENAME)
+      fileName = os.path.join(os.environ["APPDATA"], "msubresync", self.FILENAME)
     elif sys.platform == "darwin":          # Mac OS X
-      fileName = os.path.expanduser(os.path.join("~", "Library", "Preferences", "liveresync", self.FILENAME))
+      fileName = os.path.expanduser(os.path.join("~", "Library", "Preferences", "msubresync", self.FILENAME))
     else:                                   # Other: adopt XDG conventions
-      fileName = os.path.expanduser(os.path.join("~", ".config", "liveresync", self.FILENAME))
+      fileName = os.path.expanduser(os.path.join("~", ".config", "msubresync", self.FILENAME))
 
     if os.path.exists(fileName):
       self.__load(realm, fileName)

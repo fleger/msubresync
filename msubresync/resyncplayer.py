@@ -111,7 +111,7 @@ class ResyncPlayer(object):
                 delay = (d[0], delay[1])
               break
         # Update lastDelay
-        # liveresync delays follow aeidon's convention, which is the opposite of mplayer
+        # msubresync delays follow aeidon's convention, which is the opposite of mplayer
         self.__lastDelay = (-delay[0], delay[1])
 
       # Retreive the length of the video if we haven't done it yet

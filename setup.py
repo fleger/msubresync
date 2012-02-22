@@ -10,12 +10,12 @@
 from setuptools import setup, find_packages
 
 setup(
-  name = "liveresync",
+  name = "msubresync",
   version = "0.1.0",
   packages = find_packages(),
   entry_points = {
     "console_scripts": [
-      "liveresync = liveresync:main",
+      "msubresync = msubresync:main",
     ],
   },
 
@@ -26,5 +26,5 @@ setup(
   description = "Simple wrapper around MPlayer aimed at simplifying subtitles resynchronization.",
   license = "WTFPL",
   keywords = "mplayer subtitles resynchronization",
-  url = "https://github.com/fleger/liveresync",
+  url = "https://github.com/fleger/msubresync",
 )

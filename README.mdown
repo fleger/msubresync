@@ -4,21 +4,22 @@ msubresync
 Overview
 --------
 
-msubresync is a simple wrapper around MPlayer aimed at simplifying subtitles resynchronization.
+msubresync is a simple wrapper around MPlayer aimed at helping subtitle resynchronization.
 
 msubresync supports the same subtitle file formats supported by MPlayer and Gaupol.
 
 It provides a convenient way of resynchronizing subtitles that are discontinuously shifted
-while you are watching the video.
+while you are watching a video.
 
-You resynchronize the subtitles using MPlayer's own subtitles shifinting commands (by default by
-pressing the Z and X keys), and when you hit a discontinuity in syncronization, you use msubresync's
-"Push Delay" command (by default by pressing F11 or MOUSE_BUTTON1). Once you played the video, subtitles
-are automatically updated, or you can save the offsets in a file and apply them later in set of
-subtitle files.
+Resynchronization of the subtitles is made using MPlayer's own subtitle shifting commands (by default by
+pressing the Z and X keys), and discontinuities in the synchronization are saved using msubresync's
+"Push Delay" command (by default mapped to F11 or MOUSE_BUTTON1).
+
+Once the video is finished, subtitles can be automatically updated, or the timestamps of the discontinuities
+and the delays can be saved in a file that can be applied later to subtitle files.
 
 Note that msubresync can only help if the subtitles have been originally synchronized with
-a video playing at the same framerate as the video you have.
+a video playing at the same framerate as the video you whish to resynchronize them with.
 
 Also note that msubresync has only been tested on Linux, though it should work on any POSIX compliant
 system.

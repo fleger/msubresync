@@ -39,6 +39,9 @@ class Configuration(object):
           "MOUSE_BUTTON1": "Push Delay",
         },
       },
+      "Subtitles": {
+        "Encoding": "utf-8"
+      },
     }
 
   def __loadConfig(self, realm):

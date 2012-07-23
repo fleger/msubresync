@@ -80,3 +80,5 @@ The default configuration is:
       # Lower values can lead to a better precision when extracting
       # the video timestamps.
       Polling Resolution: 0.1
+    Subtitles:
+      Encoding: utf-8

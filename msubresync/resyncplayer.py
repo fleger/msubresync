@@ -187,7 +187,7 @@ class ResyncPlayer(object):
     self.__running = False
     self.__pollTimer.cancel()
     # Fixup the last video delays
-    if len(self.__videos) > 0:
+    if len(self.__videos) > 0 and self.__videos[-1].length is not None:
       self.__videos[-1]._delays.append((self.__lastDelay[0], self.__videos[-1].length))
       s = "%+.3f --> %s" %(self.__lastDelay[0], secToHMS(self.__videos[-1].length))
       print(s)

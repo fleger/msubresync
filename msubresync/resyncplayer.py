@@ -15,6 +15,7 @@ import asyncore
 import re
 import subprocess
 import copy
+import os
 
 from mplayer.async import AsyncPlayer
 
@@ -174,6 +175,9 @@ class ResyncPlayer(object):
       print("%s" %data, file=sys.stderr)
 
   def run(self):
+    # Force LANG=C for MPlayer
+    lang = os.environ["LANG"] if "LANG" in os.environ else None
+    os.environ["LANG"] = "C"
     self.__player.spawn()
     # Workaround for uncaught exceptions unexpectedly closing the channels
     self.__player.stdout._dispatcher.handle_error = self.__dummy
@@ -186,6 +190,10 @@ class ResyncPlayer(object):
     #print("asyncore loop stopped", file=sys.stderr)
     self.__running = False
     self.__pollTimer.cancel()
+    if lang is not None:
+      os.environ["LANG"] = lang
+    else:
+      os.environ.pop("LANG")
     # Fixup the last video delays
     if len(self.__videos) > 0 and self.__videos[-1].length is not None:
       self.__videos[-1]._delays.append((self.__lastDelay[0], self.__videos[-1].length))

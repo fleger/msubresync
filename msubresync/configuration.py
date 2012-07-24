@@ -37,6 +37,7 @@ class Configuration(object):
         "Bindings": {
           "F11": "Push Delay",
           "MOUSE_BUTTON1": "Push Delay",
+          "MOUSE_BTN1": "Push Delay",
         },
       },
       "Subtitles": {

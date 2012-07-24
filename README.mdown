@@ -75,7 +75,7 @@ The default configuration is:
       # Key bindings in the KEY: Action format.
       # KEY can be any unused mplayer key.
       # The only available Action for now is 'Push Delay'.
-      Bindings: {F11: Push Delay, MOUSE_BUTTON1: Push Delay}
+      Bindings: {F11: Push Delay, MOUSE_BUTTON1: Push Delay, MOUSE_BTN1: Push Delay}
       # Delay between two polling function invocations, in seconds.
       # Lower values can lead to a better precision when extracting
       # the video timestamps.

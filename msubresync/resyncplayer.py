@@ -7,7 +7,7 @@
 # To Public License, Version 2, as published by Sam Hocevar. See
 # http://sam.zoy.org/wtfpl/COPYING for more details.
 
-from __future__ import print_function
+
 
 import sys
 import threading
@@ -134,7 +134,7 @@ class ResyncPlayer(object):
     if len(self.__videos) > 0:
       with self.__pollLock:
         # Filter out later delays
-        self.__videos[-1]._delays = filter(lambda x: x[1] < self.__lastDelay[1], self.__videos[-1]._delays)
+        self.__videos[-1]._delays = [x for x in self.__videos[-1]._delays if x[1] < self.__lastDelay[1]]
         # Append lastDelay
         self.__videos[-1]._delays.append(self.__lastDelay)
       s = "%+.3f --> %s" %(self.__videos[-1]._delays[-1][0], secToHMS(self.__videos[-1]._delays[-1][1]))

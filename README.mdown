@@ -26,11 +26,11 @@ system.
 
 Dependencies 
 ------------
-- Python ≥ 2.6 and < 3 (http://python.org/)
+- Python ≥ 3 (http://python.org/)
 - Distribute (http://pypi.python.org/pypi/distribute)
 - MPlayer (http://www.mplayerhq.hu) or MPlayer2 (http://www.mplayer2.org/)
 - mplayer.py ≥ 0.7 (http://pypi.python.org/pypi/mplayer.py)
-- Gaupol ≥ 0.16 and < 0.20 (http://home.gna.org/gaupol/, only the "aeidon" module is actually required)
+- Gaupol ≥ 0.20 (http://home.gna.org/gaupol/, only the "aeidon" module is actually required)
 - PyYAML (http://pyyaml.org/wiki/PyYAML)
 
 Installation

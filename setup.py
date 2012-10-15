@@ -1,4 +1,4 @@
-#! /usr/bin/env python2
+#! /usr/bin/env python3
 # coding=utf-8
 
 # This program is free software. It comes without any warranty, to
@@ -11,7 +11,7 @@ from setuptools import setup, find_packages
 
 setup(
   name = "msubresync",
-  version = "0.1.0",
+  version = "0.2.0",
   packages = find_packages(),
   entry_points = {
     "console_scripts": [

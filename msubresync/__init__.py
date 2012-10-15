@@ -7,7 +7,7 @@
 # To Public License, Version 2, as published by Sam Hocevar. See
 # http://sam.zoy.org/wtfpl/COPYING for more details.
 
-from __future__ import print_function
+
 
 import sys
 
@@ -19,7 +19,7 @@ from .configuration import Configuration
 actions = {}
 
 def action(func):
-  actions[func.func_name] = func
+  actions[func.__name__] = func
   return func
 
 @action
